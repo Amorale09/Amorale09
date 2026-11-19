@@ -10,12 +10,22 @@ import urllib.request
 from datetime import date
 
 BG, FG, DIM = "#0a0f08", "#c8ff3c", "#5c7a1e"
-BAYER = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]
+def _bayer(n):
+    if n == 1:
+        return [[0]]
+    m = _bayer(n // 2)
+    return ([[4 * v for v in r] + [4 * v + 2 for v in r] for r in m] +
+            [[4 * v + 3 for v in r] + [4 * v + 1 for v in r] for r in m])
+
+
+N = 8
+BAYER = _bayer(N)                 # 8x8 ordered dither, values 0..63
+THRESH = (0, 12, 26, 44, 64)      # lit pixels per level, out of 64
 QUERY = """query($login:String!){user(login:$login){contributionsCollection{contributionCalendar{
 totalContributions weeks{contributionDays{contributionCount date weekday}}}}}}"""
 
-CELL, PX = 26, 5          # cell pitch, dither pixel size (cell body = 4*PX)
-W, LEFT, TOP = 1600, 90, 70
+CELL, PX = 28, 3          # cell pitch, dither pixel size (cell body = 4*PX)
+W, LEFT, TOP = 1600, 80, 110
 
 
 def fetch(login):
@@ -44,15 +54,16 @@ def main():
     weeks = cal["weeks"]
     mx = max(d["contributionCount"] for w in weeks for d in w["contributionDays"]) or 1
 
-    # one <pattern> per level: 4x4 bayer pixels, 0/6/9/13/16 of 16 lit
+    BODY = N * PX
+    # one <pattern> per level: 8x8 bayer pixels
     defs = []
     for k in range(5):
         rects = "".join(
             f'<rect x="{x*PX}" y="{y*PX}" width="{PX}" height="{PX}"/>'
-            for y in range(4) for x in range(4) if BAYER[y][x] < (0, 6, 9, 13, 16)[k]
+            for y in range(N) for x in range(N) if BAYER[y][x] < THRESH[k]
         )
         defs.append(
-            f'<pattern id="l{k}" width="{4*PX}" height="{4*PX}" patternUnits="userSpaceOnUse">'
+            f'<pattern id="l{k}" width="{BODY}" height="{BODY}" patternUnits="userSpaceOnUse">'
             f'<g fill="{FG}">{rects}</g></pattern>'
         )
 
@@ -64,10 +75,10 @@ def main():
             y = TOP + d["weekday"] * CELL
             k = level(d["contributionCount"], mx)
             if k == 0:
-                body.append(f'<rect x="{x}" y="{y}" width="{4*PX}" height="{4*PX}" fill="none" '
+                body.append(f'<rect x="{x}" y="{y}" width="{BODY}" height="{BODY}" fill="none" '
                             f'stroke="{DIM}" stroke-opacity="0.45" stroke-width="1"/>')
             else:
-                body.append(f'<g transform="translate({x},{y})"><rect width="{4*PX}" height="{4*PX}" '
+                body.append(f'<g transform="translate({x},{y})"><rect width="{BODY}" height="{BODY}" '
                             f'fill="url(#l{k})"/></g>')
         first = w["contributionDays"][0]["date"]
         m = date.fromisoformat(first).month
@@ -76,15 +87,24 @@ def main():
             last_month = m
 
     font = 'font-family="Consolas, \'DejaVu Sans Mono\', monospace"'
-    texts = [f'<text x="10" y="40" {font} font-size="30" fill="{DIM}">[02]</text>',
-             f'<text x="{LEFT+20}" y="40" {font} font-size="30" font-weight="bold" fill="{FG}">'
+    texts = [f'<text x="10" y="52" {font} font-size="44" fill="{DIM}">[02]</text>',
+             f'<text x="{LEFT+80}" y="52" {font} font-size="44" font-weight="bold" fill="{FG}">'
              f'{cal["totalContributions"]} contributions / last year</text>']
     for wi, name in months:
-        texts.append(f'<text x="{LEFT + wi*CELL}" y="{TOP-10}" {font} font-size="18" fill="{DIM}">{name}</text>')
+        texts.append(f'<text x="{LEFT + wi*CELL}" y="{TOP-14}" {font} font-size="22" fill="{DIM}">{name}</text>')
     for row, name in ((1, "mon"), (3, "wed"), (5, "fri")):
-        texts.append(f'<text x="10" y="{TOP + row*CELL + 17}" {font} font-size="18" fill="{DIM}">{name}</text>')
+        texts.append(f'<text x="6" y="{TOP + row*CELL + 18}" {font} font-size="22" fill="{DIM}">{name}</text>')
 
-    H = TOP + 7 * CELL + 30
+    ly = TOP + 7 * CELL + 36
+    texts.append(f'<text x="{LEFT}" y="{ly+16}" {font} font-size="22" fill="{DIM}">less</text>')
+    for k in range(5):
+        lx = LEFT + 70 + k * (BODY + 8)
+        if k == 0:
+            body.append(f'<rect x="{lx}" y="{ly}" width="{BODY}" height="{BODY}" fill="none" stroke="{DIM}" stroke-opacity="0.45"/>')
+        else:
+            body.append(f'<g transform="translate({lx},{ly})"><rect width="{BODY}" height="{BODY}" fill="url(#l{k})"/></g>')
+    texts.append(f'<text x="{LEFT + 70 + 5*(BODY+8) + 8}" y="{ly+16}" {font} font-size="22" fill="{DIM}">more</text>')
+    H = ly + BODY + 40
     svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">'
            f'<defs>{"".join(defs)}</defs><rect width="{W}" height="{H}" fill="{BG}"/>'
            f'{"".join(texts)}{"".join(body)}</svg>')
