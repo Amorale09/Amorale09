@@ -1,50 +1,17 @@
-<div align="center">
-
 <img src="assets/banner.png" alt="AMORALE" width="100%">
 
-<sub>`Готов падать — круизная высота`</sub>
+<img src="assets/about.png" alt="whoami" width="100%">
 
-</div>
+<img src="assets/h-stack.png" alt="01 STACK" width="100%">
+<img src="assets/stack.png" alt="C#, ASP.NET Core, .NET Framework, .NET, ESP32, Arduino, Git" width="100%">
 
-```
-> whoami
-amorale
+<img src="assets/h-activity.png" alt="02 ACTIVITY" width="100%">
+<img src="https://raw.githubusercontent.com/Amorale09/Amorale09/output/snake.svg" alt="contribution snake" width="100%">
 
-> focus
-software        desktop, tools, automation
-servers         ASP.NET Core backends, services
-hardware        microcontrollers: ESP, Arduino
+<img src="assets/h-listening.png" alt="03 LISTENING" width="100%">
+<img src="assets/lyrics.png" alt="ONDA ANDAR - One way ticket" width="100%">
 
-> status
-most of the good stuff is private
-```
+<img src="assets/h-projects.png" alt="04 PROJECTS" width="100%">
+<img src="assets/projects.png" alt="most of the good stuff is private" width="100%">
 
-<br>
-
-### `// stack`
-
-<div align="center">
-
-![C#](https://img.shields.io/badge/C%23-0a0f08?style=for-the-badge&logo=csharp&logoColor=c8ff3c&labelColor=0a0f08&color=c8ff3c)
-![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-0a0f08?style=for-the-badge&logo=dotnet&logoColor=c8ff3c&labelColor=0a0f08&color=c8ff3c)
-![.NET](https://img.shields.io/badge/.NET-0a0f08?style=for-the-badge&logo=dotnet&logoColor=c8ff3c&labelColor=0a0f08&color=c8ff3c)
-![.NET Framework](https://img.shields.io/badge/.NET_Framework-0a0f08?style=for-the-badge&logo=dotnet&logoColor=c8ff3c&labelColor=0a0f08&color=c8ff3c)
-![ESP](https://img.shields.io/badge/ESP32-0a0f08?style=for-the-badge&logo=espressif&logoColor=c8ff3c&labelColor=0a0f08&color=c8ff3c)
-![Arduino](https://img.shields.io/badge/Arduino-0a0f08?style=for-the-badge&logo=arduino&logoColor=c8ff3c&labelColor=0a0f08&color=c8ff3c)
-![Git](https://img.shields.io/badge/Git-0a0f08?style=for-the-badge&logo=git&logoColor=c8ff3c&labelColor=0a0f08&color=c8ff3c)
-
-</div>
-
-### `// activity`
-
-<div align="center">
-
-<img src="https://ghchart.rshah.org/c8ff3c/amorale09" width="100%" alt="contribution graph">
-
-</div>
-
-<br>
-
-<div align="center">
-<sub>░▒▓█ пока дышу, целуй меня █▓▒░</sub>
-</div>
+<img src="assets/divider.png" alt="" width="100%">
